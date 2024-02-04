@@ -2,6 +2,7 @@ package com.example.springTaskManager.service;
 
 import com.example.springTaskManager.entity.DayScheduleEntity;
 import com.example.springTaskManager.entity.UserEntity;
+import com.example.springTaskManager.exception.DayScheduleAlreadyExistException;
 import com.example.springTaskManager.exception.DayScheduleNotFoundException;
 import com.example.springTaskManager.exception.UserNotFoundException;
 import com.example.springTaskManager.model.DaySchedule;
@@ -18,9 +19,13 @@ public class DayScheduleService {
     private DayScheduleRepo dayScheduleRepo;
     @Autowired
     private UserRepo userRepo;
-    public DaySchedule createDaySchedule(DayScheduleEntity daySchedule, Long userid){
+    public DaySchedule createDaySchedule(DayScheduleEntity daySchedule, Long userid) throws DayScheduleAlreadyExistException, UserNotFoundException {
         UserEntity user = userRepo.findById(userid).get();
         daySchedule.setUser(user);
+        DayScheduleEntity scheduleEntity=dayScheduleRepo.findByDateAndUser_Id(daySchedule.getDate(),userid);
+        if (scheduleEntity!=null){
+            throw new DayScheduleAlreadyExistException("Распорядок дня на эту дату для вас уже существует!");
+        }
         return DaySchedule.toModel(dayScheduleRepo.save(daySchedule));
     }
     //ДОСТУП В SECURITY ТОЛЬКО У ТОГО ЖЕ ПОЛЬЗОВАТЕЛЯ ЧТО СОЗДАЛ, ИЛИ У АДМИНА
