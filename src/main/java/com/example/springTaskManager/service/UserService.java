@@ -24,19 +24,29 @@ public class UserService {
 //Получаем одного юзера
     public User getOne(Long id) throws UserNotFoundException {
         UserEntity user = userRepo.findById(id).get();
-        if (user == null){
+        if (user.getId() == null){
             throw new UserNotFoundException("Пользователь не найден");
         }
         return User.toModel(user);
     }
     //Удаляем по айди, можно в репозитории сделать функцию для удаления по любой строке
-//    public Long deleteByEmail(String email){
-//        userRepo.findByEmail(email);
-//
-//    }
 
-    public Long delete(Long id){
+    public Long delete(Long id) throws UserNotFoundException {
+        UserEntity user = userRepo.findById(id).get();
+        if (user.getId() == null){
+            throw new UserNotFoundException("Пользователь не найден");
+        }
         userRepo.deleteById(id);
         return id;
+    }
+    public User update(UserEntity user, Long userid) throws UserNotFoundException {
+            UserEntity userEntity = userRepo.findById(userid).get();
+        if (userEntity.getId()==null){
+            throw new UserNotFoundException("Пользователь не найден");
+        }
+        userEntity.setEmail(user.getEmail());
+        userEntity.setPassword(user.getPassword());
+        userEntity.setUsername(user.getUsername());
+        return User.toModel(userRepo.save(userEntity));
     }
 }

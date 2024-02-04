@@ -13,10 +13,8 @@ public class EventEntity {
     private String eventName;
     private String eventDescription;
     @Temporal(TemporalType.TIME)
-    @Column(unique = true)
     private LocalTime startTime;
     @Temporal(TemporalType.TIME)
-    @Column(unique = true)
     private LocalTime endTime;
     @ManyToOne
     @JsonIgnore

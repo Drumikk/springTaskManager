@@ -12,22 +12,33 @@ public class DayScheduleController {
     @Autowired
     private DayScheduleService dayScheduleService;
     @PostMapping
-            //Передаём и тело запроса и параметр поисковой строки, мб можно сделать лучше
     public ResponseEntity createDaySchedule(@RequestBody DayScheduleEntity daySchedule,
                                             @RequestParam Long userId){
         try {
-            return ResponseEntity.ok(dayScheduleService.createDaySchedule(daySchedule,userId));
+            return ResponseEntity.ok(dayScheduleService.createDaySchedule(daySchedule, userId));
+
         }catch (Exception e){
-            return ResponseEntity.badRequest().body("Произошла ошибка");
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    // ПОМЕНЯТЬ НА ЧТО_ТО НОРМАЛЬНОЕ!!!!!
-    @PutMapping
-    public ResponseEntity updateDaySchedule(@RequestParam Long id){
+    //ДОСТУП В SECURITY ТОЛЬКО У ТОГО ЖЕ ПОЛЬЗОВАТЕЛЯ ЧТО СОЗДАЛ, ИЛИ У АДМИНА
+    @PutMapping("/update")
+    public ResponseEntity updateDaySchedule(@RequestBody DayScheduleEntity daySchedule,
+                                            @RequestParam Long id){
         try {
-            return ResponseEntity.ok(dayScheduleService.updateDaySchedule(id));
+            return ResponseEntity.ok(dayScheduleService.updateDaySchedule(daySchedule, id));
         }catch (Exception e){
             return ResponseEntity.badRequest().body("Произошла ошибка");
         }
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteDaySchedule(Long id){
+        try{
+            dayScheduleService.delete(id);
+            return ResponseEntity.ok().body("Day Schedule" + id + "Was deleted");
+        } catch (Exception e){
+            return ResponseEntity.badRequest().body("Произошла ошибка при удалении пользователя");
+        }
+    }
+
 }

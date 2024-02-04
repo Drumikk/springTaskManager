@@ -12,7 +12,6 @@ public class DayScheduleEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Temporal(TemporalType.DATE)
-    @Column(unique = true)
     private LocalDate date;
     @ManyToOne
     @JsonIgnore

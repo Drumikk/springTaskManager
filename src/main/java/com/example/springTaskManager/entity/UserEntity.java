@@ -1,7 +1,9 @@
 package com.example.springTaskManager.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import org.springframework.lang.NonNull;
+
 
 import java.util.List;
 
@@ -11,9 +13,11 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
     private String username;
+    @NotNull
     private String password;
-    @NonNull
+    @NotNull
     @Column(unique = true)
     private String email;
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
