@@ -7,5 +7,10 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface EventRepo extends CrudRepository<EventEntity, Long> {
-   List<EventEntity> findAllByStartTimeAndAndId(LocalTime time, Long id);
+
+    //Находим методом все записи в БД, в которых стартовое
+    // время интервала меньше переданного конечного времени
+    // и конечное время больше переданного стартового и айди дня равен переданному.
+   List<EventEntity> findByStartTimeLessThanEqualAndEndTimeGreaterThanEqualAndDayScheduleEntityId(LocalTime endTime, LocalTime startTime,Long id);
+
 }

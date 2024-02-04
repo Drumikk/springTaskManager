@@ -2,11 +2,10 @@ package com.example.springTaskManager.service;
 
 import com.example.springTaskManager.entity.DayScheduleEntity;
 import com.example.springTaskManager.entity.EventEntity;
-import com.example.springTaskManager.exception.StartTimeIncorrectException;
+import com.example.springTaskManager.exception.TimeIncorrectException;
 import com.example.springTaskManager.repository.DayScheduleRepo;
 import com.example.springTaskManager.repository.EventRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,18 +26,15 @@ public class EventService {
 //
 //
 //    }
-    public EventEntity createEvent(EventEntity event, Long dayScheduleId) throws StartTimeIncorrectException {
+    public EventEntity createEvent(EventEntity event, Long dayScheduleId) throws TimeIncorrectException {
         DayScheduleEntity daySchedule = dayScheduleRepo.findById(dayScheduleId).get();
         event.setDayScheduleEntity(daySchedule);
-//        if ((eventRepo.findByStartTime(event.getStartTime()) != null) && (eventRepo.findByDayScheduleEntity_Id(dayScheduleId)!=null )
-//                &&(eventRepo.findByStartTime(event.getStartTime())) > event.getStartTime()
-//        {
-//            throw  new StartTimeIncorrectException("Некорректное стартовое время");
-//        }
-        List<EventEntity> eventEntitiesList = eventRepo.findAllByStartTimeAndAndId(event.getStartTime(), dayScheduleId);
+        //Список наших промежутков, которые пересекаются с тем, который хотим задать и имеют такое же айди дня.
+        //Если список пустой, то можем бронировать промежуток, если нет - просто возвращаем сущность ивента обратно + исключение
+        List<EventEntity> eventEntitiesList = eventRepo.findByStartTimeLessThanEqualAndEndTimeGreaterThanEqualAndDayScheduleEntityId(event.getEndTime(),event.getStartTime(),dayScheduleId);
         if (eventEntitiesList.isEmpty()) {
             return eventRepo.save(event);
         }
-        return event;
+        throw  new TimeIncorrectException("Некорректный промежуток времени");
     }
 }
