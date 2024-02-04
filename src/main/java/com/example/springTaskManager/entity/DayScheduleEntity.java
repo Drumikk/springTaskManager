@@ -1,5 +1,6 @@
 package com.example.springTaskManager.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -11,8 +12,10 @@ public class DayScheduleEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Temporal(TemporalType.DATE)
+    @Column(unique = true)
     private LocalDate date;
     @ManyToOne
+    @JsonIgnore
     //указываем поле по которому таблицы будут связаны
     @JoinColumn(name = "user_id")
     private UserEntity user;

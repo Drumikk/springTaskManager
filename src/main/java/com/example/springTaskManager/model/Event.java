@@ -1,29 +1,27 @@
-package com.example.springTaskManager.entity;
+package com.example.springTaskManager.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import com.example.springTaskManager.entity.EventEntity;
 
 import java.time.LocalTime;
 
-@Entity
-public class EventEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class Event {
     private Long id;
     private String eventName;
     private String eventDescription;
-    @Temporal(TemporalType.TIME)
-    @Column(unique = true)
     private LocalTime startTime;
-    @Temporal(TemporalType.TIME)
-    @Column(unique = true)
     private LocalTime endTime;
-    @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "day_schedule_id")
-    private DayScheduleEntity dayScheduleEntity;
 
-    public EventEntity() {
+    public static Event toModel(EventEntity entity){
+        Event model = new Event();
+        model.setEndTime(entity.getEndTime());
+        model.setId(entity.getId());
+        model.setEventDescription(entity.getEventDescription());
+        model.setStartTime(entity.getStartTime());
+        model.setEventName(entity.getEventName());
+        return model;
+    }
+
+    public Event() {
     }
 
     public Long getId() {
@@ -64,13 +62,5 @@ public class EventEntity {
 
     public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
-    }
-
-    public DayScheduleEntity getDayScheduleEntity() {
-        return dayScheduleEntity;
-    }
-
-    public void setDayScheduleEntity(DayScheduleEntity dayScheduleEntity) {
-        this.dayScheduleEntity = dayScheduleEntity;
     }
 }
